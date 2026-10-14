@@ -1,9 +1,46 @@
 {
-  "status": "PENDING_HUMAN_APPROVAL",
+  "status": "ACCEPTED_BY_USER_IN_CHAT_NOT_ATTESTED",
   "provenance": "AGENT-PROPOSED",
-  "contract_sha256": "dec0fc66088b251c8cbb914ab8188fd53f69447ce97320d4eb37ef762c1451dd",
-  "note": "Candidatos AGENT-PROPOSED. No forman parte del inventario humano (login.inventory.json) hasta que una persona los adopte expresamente; validate_bundle.py exige que el inventario coincida exactamente con los requisitos HUMAN activos.",
+  "accepted_on": "2026-10-14",
+  "contract_sha256": "ef9d4cdada44403de8ad8edead7a983e834b908f37f9b2d38867550acfebe8e3",
+  "note": "Requisitos AGENT-PROPOSED (LOGIN-04 a LOGIN-36). La persona los aceptó en el chat el 2026-10-14; conservan su procedencia AGENT-PROPOSED y no forman parte del inventario humano (login.inventory.json, LOGIN-01 a LOGIN-03): validate_bundle.py exige que el inventario coincida exactamente con los requisitos HUMAN activos. La aceptación en el chat no es un evento de aprobación atestado.",
   "requirements": [
+    {
+      "requirement_id": "LOGIN-04",
+      "excerpt": "Con las credenciales documentadas para el escenario de éxito, el inicio de sesión simulado termina en éxito cada vez que se intenta."
+    },
+    {
+      "requirement_id": "LOGIN-05",
+      "excerpt": "Con las credenciales documentadas para un escenario de error, el inicio de sesión simulado termina en error cada vez que se intenta."
+    },
+    {
+      "requirement_id": "LOGIN-06",
+      "excerpt": "Un inicio de sesión exitoso identifica a un usuario con id, nombre y correo electrónico."
+    },
+    {
+      "requirement_id": "LOGIN-07",
+      "excerpt": "Mientras el inicio de sesión está en curso, la pantalla de inicio de sesión muestra un estado de carga."
+    },
+    {
+      "requirement_id": "LOGIN-08",
+      "excerpt": "Cuando el inicio de sesión termina en éxito, la pantalla de inicio de sesión muestra un estado de éxito."
+    },
+    {
+      "requirement_id": "LOGIN-09",
+      "excerpt": "Cuando el inicio de sesión termina en error, la pantalla de inicio de sesión muestra un estado de error."
+    },
+    {
+      "requirement_id": "LOGIN-10",
+      "excerpt": "El inicio de sesión se resuelve con datos simulados, sin contactar ningún backend."
+    },
+    {
+      "requirement_id": "LOGIN-11",
+      "excerpt": "La documentación del proyecto explica cómo activar cada escenario simulado de éxito y de error."
+    },
+    {
+      "requirement_id": "LOGIN-12",
+      "excerpt": "Existen comprobaciones automatizadas de las validaciones, del flujo de inicio de sesión y de sus estados de carga, éxito y error."
+    },
     {
       "requirement_id": "LOGIN-13",
       "excerpt": "Antes de validarlo, el correo se recorta de los espacios en blanco iniciales y finales."

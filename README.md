@@ -90,7 +90,7 @@ La explicación completa de capas, responsabilidades y flujo está en [docs/arch
 | [docs/decisions.md](docs/decisions.md) | Registro de decisiones: qué, por qué y quién decidió |
 | [docs/assurance/verification.md](docs/assurance/verification.md) | Qué evidencia debe producir un cambio, cómo ejecutar las comprobaciones y qué sigue requiriendo criterio humano |
 | [docs/replication-guide.md](docs/replication-guide.md) | Guía paso a paso para llevar esta estructura y esta preparación de assurance a otro proyecto Flutter |
-| [docs/quality-contracts/login.md](docs/quality-contracts/login.md) | Contrato de calidad del inicio de sesión (LOGIN-01 a LOGIN-36). **Pendiente de aprobación humana** |
+| [docs/quality-contracts/login.md](docs/quality-contracts/login.md) | Contrato de calidad del inicio de sesión (LOGIN-01 a LOGIN-36: HUMAN solo 01 a 03; 04 a 36 son AGENT-PROPOSED aceptados por la persona en el chat el 2026-10-14). **Sin aprobación formal atestada** |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | Workflow de CI: comprobaciones deterministas en pull requests y pushes a `main` (sin ejecutar todavía en GitHub) |
 | [AGENTS.md](AGENTS.md) | Instrucciones para agentes: entrada obligatoria por el orquestador y reglas del repositorio |
 | [.engineering-assurance/project-assurance.json](.engineering-assurance/project-assurance.json) | Configuración de assurance: rutas, comandos y capacidades |

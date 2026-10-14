@@ -8,15 +8,23 @@ Explica qué es cada artefacto de assurance del proyecto, qué evidencia debe pr
 | --- | --- |
 | [`.engineering-assurance/project-assurance.json`](../../.engineering-assurance/project-assurance.json) | Configuración versionada del proyecto: categorías de rutas (`production`, `tests`, `assurance`, `other`), ubicación del contrato, patrones que disparan la revisión de dependencias, comandos de comprobación y capacidades requeridas (las que el preflight debe acreditar). Su existencia hace que todo cambio futuro se coordine como **certificación formal** (ver más abajo) |
 | [`AGENTS.md`](../../AGENTS.md) | Instrucciones para agentes: entrada obligatoria por `engineering-orchestrator` para cambios de producción o de comportamiento, fuentes que leer y reglas del repositorio |
-| [`docs/quality-contracts/login.md`](../quality-contracts/login.md) | Quality Contract: **qué debe hacer** el inicio de sesión (LOGIN-01 a LOGIN-36), con procedencia por requisito. Estado: pendiente de aprobación humana |
-| [`docs/quality-contracts/login.inventory.json`](../quality-contracts/login.inventory.json) | Inventario de los requisitos **HUMAN** (LOGIN-01 a LOGIN-12): ID, pasaje literal y `contract_sha256` |
-| [`docs/quality-contracts/login.proposed-requirements.json`](../quality-contracts/login.proposed-requirements.json) | Requisitos **AGENT-PROPOSED** (LOGIN-13 a LOGIN-36) pendientes de que una persona los adopte. Estado `PENDING_HUMAN_APPROVAL` |
+| [`docs/quality-contracts/login.md`](../quality-contracts/login.md) | Quality Contract: **qué debe hacer** el inicio de sesión (LOGIN-01 a LOGIN-36), con procedencia por requisito. Estado: procedencia confirmada y propuestas aceptadas en el chat el 2026-10-14; **sin aprobación formal atestada** |
+| [`docs/quality-contracts/login.inventory.json`](../quality-contracts/login.inventory.json) | Inventario de los requisitos **HUMAN** (solo LOGIN-01 a LOGIN-03): ID, pasaje literal y `contract_sha256` |
+| [`docs/quality-contracts/login.proposed-requirements.json`](../quality-contracts/login.proposed-requirements.json) | Requisitos **AGENT-PROPOSED** (LOGIN-04 a LOGIN-36). Estado `ACCEPTED_BY_USER_IN_CHAT_NOT_ATTESTED`: la persona los aceptó en el chat el 2026-10-14; esa aceptación no es una aprobación atestada y no los convierte en HUMAN |
 | [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) | Workflow de GitHub Actions que repite las comprobaciones deterministas en un runner de GitHub (ver [Integración continua](#integración-continua-github-actions)). Nunca se ha ejecutado en GitHub |
 | `test/**` | Las comprobaciones ejecutables: pruebas unitarias, de widget, de composición (`test/app_test.dart`) y de arquitectura (`test/architecture/`) |
 
 ### Por qué el inventario contiene solo requisitos HUMAN
 
-`validate_bundle.py` (del workbench) exige que el inventario coincida **exactamente** con los requisitos HUMAN activos de la trazabilidad, y que cada pasaje aparezca literal en el contrato. Si LOGIN-13 a LOGIN-36 se incluyeran en el inventario, habría que etiquetarlos como HUMAN y se falsearía su procedencia: nadie los ha aprobado todavía. Por eso viven en `login.proposed-requirements.json` y se mueven al inventario cuando una persona los adopte expresamente (conservando su historial de origen). Hasta entonces son supuestos de trabajo que el equipo implementa y prueba.
+`validate_bundle.py` (del workbench) exige que el inventario coincida **exactamente** con los requisitos HUMAN activos de la trazabilidad, y que cada pasaje aparezca literal en el contrato. Si LOGIN-04 a LOGIN-36 se incluyeran en el inventario, habría que etiquetarlos como HUMAN y se falsearía su procedencia: los derivaron o propusieron los agentes, y la persona confirmó en el chat (2026-10-14) que el conjunto HUMAN es solo LOGIN-01 a LOGIN-03. Aceptar las propuestas en el chat no cambia su procedencia: siguen siendo AGENT-PROPOSED, viven en `login.proposed-requirements.json` y no entran en el inventario. Esa aceptación es una decisión humana registrada, no una atestación; la aprobación formal del contrato y del inventario sigue sin existir. Una propuesta solo pasaría al inventario si una persona la adoptara expresamente como suya (por ejemplo, porque la pide literalmente), conservando el historial de origen.
+
+### Regla de la persona sobre las pruebas HUMAN y las propuestas
+
+La persona fijó esta regla en el chat el 2026-10-14:
+
+- Las pruebas **HUMAN se respetan siempre**: no se debilitan, no se eliminan y no se reinterpretan, aunque se agreguen otros casos.
+- Los agentes pueden **proponer escenarios adicionales** cuando lo vean necesario, con procedencia **AGENT-PROPOSED**.
+- **Solo es HUMAN lo que la persona pidió literalmente.** Lo que derivan los agentes de la petición es AGENT-PROPOSED aunque parezca obvio. En FitNotes la petición literal es "Valida correo no vacío y con formato válido, y contraseña no vacía", que da LOGIN-01, LOGIN-02 y LOGIN-03.
 
 ### Cómo se calculan los hashes
 
@@ -26,7 +34,7 @@ Explica qué es cada artefacto de assurance del proyecto, qué evidencia debe pr
 shasum -a 256 docs/quality-contracts/login.md      # macOS; en Linux: sha256sum
 ```
 
-El resultado debe coincidir con `contract_sha256` de `login.inventory.json` y de `login.proposed-requirements.json`. Comprobación hecha el 2026-10-14: coinciden (`dec0fc66…51dd`), y cada pasaje del inventario aparece como línea literal de `login.md`.
+El resultado debe coincidir con `contract_sha256` de `login.inventory.json` y de `login.proposed-requirements.json`. Comprobación hecha el 2026-10-14: coinciden (`ef9d4cda…e8e3`), y cada pasaje del inventario aparece como línea literal de `login.md`.
 
 Si cambias `login.md`: recalcula el hash en ambos JSON, revisa los pasajes y **pide una nueva aprobación**; ninguna aprobación anterior cubre bytes nuevos.
 
@@ -200,8 +208,8 @@ Reduce la revisión línea a línea: la persona revisa **el contrato, el inventa
 
 Sigue requiriendo criterio humano:
 
-- **Aprobar el contrato y el inventario**, con un evento registrado fuera del control de los agentes.
-- **Adoptar (o rechazar) los requisitos AGENT-PROPOSED** LOGIN-13 a LOGIN-36.
+- **Aprobar el contrato y el inventario** (LOGIN-01 a LOGIN-03), con un evento registrado fuera del control de los agentes. La confirmación de procedencia y la aceptación de las propuestas en el chat no lo sustituyen.
+- **Atestar la aceptación de los requisitos AGENT-PROPOSED** LOGIN-04 a LOGIN-36. La persona ya los aceptó en el chat el 2026-10-14; falta el evento firmado por un emisor independiente.
 - **Revisar el diff de `.github/**` antes de fusionar** cualquier pull request que lo toque: es la mitigación del riesgo anterior (un pull request puede redefinir el check `checks`) y coincide con tratar esa ruta como producción. Aunque la política está aprobada en el chat, sin la transición formal ni el gate sigue siendo una práctica recomendada y no un control técnico.
 - **Atestar el cambio de política** que añade `.github/**` a `paths.production` y `.github/workflows/**` a `review_triggers.dependencies`. El usuario ya lo aprobó en el chat (ver [la política de assurance para el CI](#política-de-assurance-para-el-ci-aprobada-en-el-chat-sin-atestación)); falta el evento de aprobación firmado por el emisor independiente y la transición formal (`approved_policy_transition_sha256`).
 - **El operador independiente, la firma y el gate** (provisionar clave, base, emisor y runner protegido).

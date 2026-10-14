@@ -10,15 +10,16 @@ Este repositorio versiona `.engineering-assurance/project-assurance.json`. Segú
 
 ## Fuentes que debes leer antes de planificar
 
-1. `docs/quality-contracts/login.md`: comportamiento acordado. Estado: PENDIENTE DE APROBACIÓN HUMANA.
-2. `docs/quality-contracts/login.inventory.json`: inventario de los requisitos HUMAN (LOGIN-01 a LOGIN-12), con el SHA-256 del contrato.
-3. `docs/quality-contracts/login.proposed-requirements.json`: requisitos AGENT-PROPOSED (LOGIN-13 a LOGIN-36) pendientes de que una persona los adopte.
+1. `docs/quality-contracts/login.md`: comportamiento acordado. Estado: procedencia confirmada y propuestas aceptadas por la persona en el chat (2026-10-14); **sin aprobación formal atestada**.
+2. `docs/quality-contracts/login.inventory.json`: inventario de los requisitos HUMAN (solo LOGIN-01 a LOGIN-03), con el SHA-256 del contrato.
+3. `docs/quality-contracts/login.proposed-requirements.json`: requisitos AGENT-PROPOSED (LOGIN-04 a LOGIN-36), aceptados por la persona en el chat el 2026-10-14 (`ACCEPTED_BY_USER_IN_CHAT_NOT_ATTESTED`). Conservan su procedencia y no entran en el inventario.
 4. `.engineering-assurance/project-assurance.json`: rutas, comandos y capacidades requeridas (las que el preflight debe acreditar).
 5. `docs/assurance/verification.md`: evidencia que debe producir un cambio y criterios para considerarlo verificado.
 
 ## Reglas
 
-- Conserva todos los requisitos HUMAN y su redacción literal. Si cambia el contrato, recalcula su SHA-256, actualiza el inventario y pide una nueva aprobación humana. Una aprobación anterior no cubre bytes nuevos.
+- Las pruebas HUMAN (LOGIN-01 a LOGIN-03) se respetan siempre: no las debilites, no las elimines ni las reinterpretes, y conserva su redacción literal. Solo es HUMAN lo que la persona pidió literalmente; lo que derivas tú es AGENT-PROPOSED aunque parezca obvio. Puedes proponer escenarios adicionales cuando lo veas necesario, siempre como AGENT-PROPOSED.
+- Si cambia el contrato, recalcula su SHA-256 en el inventario y en el archivo de propuestos, y pide una nueva aprobación humana. Una aprobación anterior (incluida la aceptación en el chat) no cubre bytes nuevos.
 - No elimines ni debilites pruebas para acomodar código. Aplica TDD (RED por aserción antes de GREEN) a cada cambio de lógica o de estados.
 - Mantén la dirección de dependencias que comprueba `flutter test test/architecture`: `domain` no importa `data`, `presentation` ni Flutter.
 - Registra para cada verificación el comando, el resultado y el estado de código: `HEAD` y, si hay cambios sin commit, `git diff` o los hashes de los archivos.

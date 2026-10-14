@@ -2,11 +2,12 @@
 
 ## Procedencia y estado
 
-**Estado: PENDIENTE DE APROBACIÓN HUMANA.**
+**Estado: procedencia confirmada y propuestas aceptadas por la persona en el chat (2026-10-14); sin aprobación formal atestada.**
 
-- **HUMAN**: requisitos que reformulan, sin añadir reglas, la petición literal de la persona de crear desde cero una aplicación básica de Flutter con un inicio de sesión simulado. Están pendientes de aprobación formal.
-- **AGENT-PROPOSED**: decisiones propuestas por el engineering-orchestrator al renunciar la persona al borrador, y casos añadidos por la especificación para cubrir dimensiones de comportamiento que la petición no definía. Son supuestos de trabajo hasta que la persona los apruebe, los ajuste o los rechace.
-- Ningún agente puede aprobar este contrato, su inventario ni ninguno de sus requisitos. Solo la persona puede hacerlo, mediante un evento de aprobación verificable registrado fuera del control de los agentes. Que este archivo exista en Git no constituye aprobación.
+- **HUMAN**: solo LOGIN-01, LOGIN-02 y LOGIN-03. Son los escenarios que la persona pidió literalmente ("Valida correo no vacío y con formato válido, y contraseña no vacía") y la persona confirmó en el chat el 2026-10-14 que el conjunto HUMAN es exactamente ese.
+- **AGENT-PROPOSED**: LOGIN-04 a LOGIN-36. Los derivaron los agentes de la petición o los propusieron para cubrir dimensiones que la petición no definía. La persona los aceptó en el chat el 2026-10-14; conservan su procedencia AGENT-PROPOSED y no se convierten en HUMAN.
+- **Regla de la persona**: las pruebas HUMAN se respetan siempre; no se debilitan, no se eliminan y no se reinterpretan. Los agentes pueden proponer escenarios adicionales cuando lo vean necesario, siempre con procedencia AGENT-PROPOSED. Solo es HUMAN lo que la persona pidió literalmente; lo derivado por agentes es AGENT-PROPOSED aunque parezca obvio.
+- La confirmación y la aceptación en el chat son decisiones humanas registradas, no eventos de aprobación atestados. Ningún agente puede aprobar este contrato ni su inventario: la aprobación formal requiere un evento verificable registrado por un ejecutor independiente, fuera del control de los agentes, y todavía no existe. Que este archivo exista en Git no constituye aprobación.
 - Este contrato se creó como configuración para cambios futuros durante un trabajo ordinario; no certifica el trabajo que lo originó.
 - Base: proyecto nuevo, sin comportamiento previo que preservar.
 
@@ -18,9 +19,9 @@ Permitir que una persona pruebe un flujo básico de inicio de sesión con correo
 
 1. **Estado inicial** (AGENT-PROPOSED): la pantalla muestra un formulario con los campos correo y contraseña vacíos, sin mensajes, y un control de envío disponible.
 2. **Intento de envío** (HUMAN y AGENT-PROPOSED): al intentar enviar, se validan el correo y la contraseña. Si hay errores de validación, se muestran junto a su campo y no se envía ninguna solicitud de inicio de sesión.
-3. **Carga** (HUMAN y AGENT-PROPOSED): si los datos son válidos, comienza el inicio de sesión simulado. Mientras está en curso, se ve un indicador de progreso, el envío está deshabilitado y ningún intento adicional genera otra solicitud.
-4. **Éxito** (HUMAN y AGENT-PROPOSED): se muestra un mensaje de bienvenida con el nombre y el correo del usuario identificado, y un botón para volver al formulario. Volver devuelve la pantalla al estado inicial; es un reinicio local, no un cierre de sesión real.
-5. **Error** (HUMAN y AGENT-PROPOSED): se muestra un mensaje visible, distinto para credenciales inválidas y para error técnico. El formulario conserva los valores introducidos, sigue editable y permite reintentar.
+3. **Carga** (AGENT-PROPOSED): si los datos son válidos, comienza el inicio de sesión simulado. Mientras está en curso, se ve un indicador de progreso, el envío está deshabilitado y ningún intento adicional genera otra solicitud.
+4. **Éxito** (AGENT-PROPOSED): se muestra un mensaje de bienvenida con el nombre y el correo del usuario identificado, y un botón para volver al formulario. Volver devuelve la pantalla al estado inicial; es un reinicio local, no un cierre de sesión real.
+5. **Error** (AGENT-PROPOSED): se muestra un mensaje visible, distinto para credenciales inválidas y para error técnico. El formulario conserva los valores introducidos, sigue editable y permite reintentar.
 6. **Terminación** (AGENT-PROPOSED): toda solicitud iniciada termina en éxito o en error.
 
 La interfaz se presenta en español (AGENT-PROPOSED).
@@ -39,7 +40,7 @@ La interfaz se presenta en español (AGENT-PROPOSED).
 - Un correo aceptado se normaliza a minúsculas (AGENT-PROPOSED). Motivo: en este inicio de sesión simulado el correo se compara sin distinguir mayúsculas, aunque la parte local sea técnicamente sensible a mayúsculas según el RFC.
 - La contraseña no puede estar vacía (HUMAN). No se recorta, solo es vacía con cero caracteres y no tiene reglas de complejidad (AGENT-PROPOSED).
 - Si existe algún error de validación, no se envía ninguna solicitud de inicio de sesión y se muestran todos los errores por campo a la vez (AGENT-PROPOSED).
-- El inicio de sesión se resuelve con datos simulados, sin backend (HUMAN). El mock permite reproducir el éxito y el error (HUMAN). Sus escenarios se activan solo mediante las credenciales introducidas (AGENT-PROPOSED):
+- El inicio de sesión se resuelve con datos simulados, sin backend (AGENT-PROPOSED). El mock permite reproducir el éxito y el error (AGENT-PROPOSED). Sus escenarios se activan solo mediante las credenciales introducidas (AGENT-PROPOSED):
   - correo demo@fitnotes.dev con contraseña Demo1234: éxito con el usuario de id user-demo-001, nombre Demo FitNotes y correo demo@fitnotes.dev;
   - correo fallo@fitnotes.dev con cualquier contraseña no vacía: error técnico servicio no disponible;
   - cualquier otra combinación que supere la validación: error credenciales inválidas;
@@ -52,16 +53,16 @@ La interfaz se presenta en español (AGENT-PROPOSED).
 - Nunca se envía una solicitud de inicio de sesión con un correo o una contraseña que no superen la validación (AGENT-PROPOSED).
 - Como máximo hay una solicitud de inicio de sesión en curso a la vez, cualquiera que sea el medio de envío (AGENT-PROPOSED).
 - Toda solicitud iniciada termina en éxito o en error; la pantalla nunca queda en carga indefinidamente (AGENT-PROPOSED).
-- Un usuario identificado siempre tiene id, nombre y correo electrónico (HUMAN).
+- Un usuario identificado siempre tiene id, nombre y correo electrónico (AGENT-PROPOSED).
 - El correo de un usuario identificado cumple las reglas de formato y está en minúsculas (AGENT-PROPOSED).
-- Las mismas credenciales producen siempre el mismo resultado simulado (HUMAN: reproducibilidad; AGENT-PROPOSED: alcance determinista).
+- Las mismas credenciales producen siempre el mismo resultado simulado (AGENT-PROPOSED).
 - La contraseña nunca se muestra en claro en la pantalla ni en los mensajes (AGENT-PROPOSED).
 
 ## Pruebas humanas
 
 Cada prueba tiene un ID estable. En cada una, la primera oración después del título es el pasaje exacto que debe citarse literalmente en el inventario y en la trazabilidad (contract_excerpt). Si se necesita otra interpretación, hace falta una nueva aprobación humana acreditada.
 
-Las pruebas HUMAN son obligatorias aunque se agreguen otros casos. Las pruebas AGENT-PROPOSED conservan su procedencia: no forman parte del inventario humano mientras la persona no las adopte expresamente.
+Las pruebas HUMAN (LOGIN-01 a LOGIN-03) se respetan siempre: no se debilitan, no se eliminan y no se reinterpretan, aunque se agreguen otros casos. Las pruebas AGENT-PROPOSED (LOGIN-04 a LOGIN-36) conservan su procedencia aunque la persona las haya aceptado y no forman parte del inventario humano. Los agentes pueden proponer más escenarios cuando lo vean necesario, con procedencia AGENT-PROPOSED.
 
 Este archivo no contiene IDs de ejecución, firmas ni aprobaciones; esos datos los captura un ejecutor independiente.
 
@@ -107,11 +108,13 @@ Un intento de inicio de sesión con la contraseña vacía se rechaza con un erro
 - Aparece un error de validación en el campo contraseña.
 - No se inicia el inicio de sesión.
 
+### Requisitos AGENT-PROPOSED (derivados por agentes de la petición)
+
 ### LOGIN-04 — Éxito reproducible
 
 Con las credenciales documentadas para el escenario de éxito, el inicio de sesión simulado termina en éxito cada vez que se intenta.
 
-**Procedencia:** HUMAN ("El mock debe permitir probar éxito [...] de forma reproducible").
+**Procedencia:** AGENT-PROPOSED (requirement-specifier; derivado de la petición ("El mock debe permitir probar éxito [...] de forma reproducible"); reclasificado por la persona en el chat el 2026-10-14).
 
 **Pasos**
 1. Usar las credenciales de éxito documentadas.
@@ -124,7 +127,7 @@ Con las credenciales documentadas para el escenario de éxito, el inicio de sesi
 
 Con las credenciales documentadas para un escenario de error, el inicio de sesión simulado termina en error cada vez que se intenta.
 
-**Procedencia:** HUMAN ("El mock debe permitir probar [...] error de forma reproducible").
+**Procedencia:** AGENT-PROPOSED (requirement-specifier; derivado de la petición ("El mock debe permitir probar [...] error de forma reproducible"); reclasificado por la persona en el chat el 2026-10-14).
 
 **Pasos**
 1. Usar las credenciales documentadas de cada escenario de error.
@@ -137,7 +140,7 @@ Con las credenciales documentadas para un escenario de error, el inicio de sesi�
 
 Un inicio de sesión exitoso identifica a un usuario con id, nombre y correo electrónico.
 
-**Procedencia:** HUMAN ("User con id, name y email").
+**Procedencia:** AGENT-PROPOSED (requirement-specifier; derivado de la petición ("User con id, name y email"); reclasificado por la persona en el chat el 2026-10-14).
 
 **Pasos**
 1. Iniciar sesión con las credenciales de éxito.
@@ -149,7 +152,7 @@ Un inicio de sesión exitoso identifica a un usuario con id, nombre y correo ele
 
 Mientras el inicio de sesión está en curso, la pantalla de inicio de sesión muestra un estado de carga.
 
-**Procedencia:** HUMAN ("estados de carga").
+**Procedencia:** AGENT-PROPOSED (requirement-specifier; derivado de la petición ("estados de carga"); reclasificado por la persona en el chat el 2026-10-14).
 
 **Pasos**
 1. Enviar credenciales válidas.
@@ -162,7 +165,7 @@ Mientras el inicio de sesión está en curso, la pantalla de inicio de sesión m
 
 Cuando el inicio de sesión termina en éxito, la pantalla de inicio de sesión muestra un estado de éxito.
 
-**Procedencia:** HUMAN ("estados de [...] éxito").
+**Procedencia:** AGENT-PROPOSED (requirement-specifier; derivado de la petición ("estados de [...] éxito"); reclasificado por la persona en el chat el 2026-10-14).
 
 **Pasos**
 1. Enviar las credenciales de éxito y esperar la respuesta.
@@ -174,7 +177,7 @@ Cuando el inicio de sesión termina en éxito, la pantalla de inicio de sesión 
 
 Cuando el inicio de sesión termina en error, la pantalla de inicio de sesión muestra un estado de error.
 
-**Procedencia:** HUMAN ("estados de [...] error").
+**Procedencia:** AGENT-PROPOSED (requirement-specifier; derivado de la petición ("estados de [...] error"); reclasificado por la persona en el chat el 2026-10-14).
 
 **Pasos**
 1. Enviar las credenciales de un escenario de error y esperar la respuesta.
@@ -186,7 +189,7 @@ Cuando el inicio de sesión termina en error, la pantalla de inicio de sesión m
 
 El inicio de sesión se resuelve con datos simulados, sin contactar ningún backend.
 
-**Procedencia:** HUMAN ("implementación con un mock, sin backend").
+**Procedencia:** AGENT-PROPOSED (requirement-specifier; derivado de la petición ("implementación con un mock, sin backend"); reclasificado por la persona en el chat el 2026-10-14).
 
 **Pasos**
 1. Iniciar sesión en cada escenario sin conexión de red.
@@ -198,7 +201,7 @@ El inicio de sesión se resuelve con datos simulados, sin contactar ningún back
 
 La documentación del proyecto explica cómo activar cada escenario simulado de éxito y de error.
 
-**Procedencia:** HUMAN ("documenta cómo activar cada escenario").
+**Procedencia:** AGENT-PROPOSED (requirement-specifier; derivado de la petición ("documenta cómo activar cada escenario"); reclasificado por la persona en el chat el 2026-10-14).
 
 **Pasos**
 1. Leer la documentación del proyecto.
@@ -211,7 +214,7 @@ La documentación del proyecto explica cómo activar cada escenario simulado de 
 
 Existen comprobaciones automatizadas de las validaciones, del flujo de inicio de sesión y de sus estados de carga, éxito y error.
 
-**Procedencia:** HUMAN ("Incluye comprobaciones automatizadas de las validaciones, el flujo de inicio de sesión y sus estados de carga, éxito y error").
+**Procedencia:** AGENT-PROPOSED (requirement-specifier; derivado de la petición ("Incluye comprobaciones automatizadas de las validaciones, el flujo de inicio de sesión y sus estados de carga, éxito y error"); reclasificado por la persona en el chat el 2026-10-14).
 
 **Pasos**
 1. Revisar la suite de pruebas.
@@ -578,14 +581,13 @@ Un fallo inesperado durante el inicio de sesión se muestra como error técnico 
 
 ## Decisiones pendientes
 
-- Aprobar, ajustar o rechazar los requisitos AGENT-PROPOSED LOGIN-13 a LOGIN-36. Mientras tanto se usan como supuestos de trabajo y no bloquean el trabajo ordinario.
-- Decidir si los requisitos AGENT-PROPOSED aprobados se adoptan como requisitos humanos del inventario, conservando el historial de su origen.
-- Aprobar el inventario humano completo (`login.inventory.json`) mediante un evento registrado por un ejecutor independiente.
+- La aprobación formal atestada: el inventario humano (`login.inventory.json`, LOGIN-01 a LOGIN-03) y este contrato requieren un evento de aprobación registrado por un ejecutor independiente. La confirmación del 2026-10-14 en el chat no lo sustituye.
+- Cualquier escenario nuevo que propongan los agentes entra como AGENT-PROPOSED y requiere la aceptación de la persona; no modifica ni sustituye las pruebas HUMAN.
 - Textos visibles exactos de los mensajes: no son contractuales; la implementación los define en un único lugar y las pruebas comprueban que cada mensaje identifica su causa.
 
 ## Notas
 
-- La petición HUMAN también fija restricciones técnicas. Este contrato no las convierte en comportamiento, pero no deben perderse; el plan técnico y la revisión deben conservarlas:
+- La petición original de la persona también fija restricciones técnicas de diseño (no son escenarios ni requisitos del inventario). Este contrato no las convierte en comportamiento, pero no deben perderse; el plan técnico y la revisión deben conservarlas:
   - objeto de valor para el correo;
   - entidad de dominio User con id, name y email;
   - contrato de repositorio implementado con un mock, sin backend;

@@ -44,7 +44,7 @@ Las reglas están codificadas en el test, no inferidas: si cambias tus capas, ca
 
 1. Parte de la plantilla del workbench `engineering-assurance/templates/QUALITY_CONTRACT.md` y de su guía `engineering-assurance/docs/QUALITY_CONTRACT_GUIDE.md`. Guárdalo en `docs/quality-contracts/<feature>.md` (o la ubicación que declares en `quality_contract.locations`).
 2. Describe **qué debe hacer** el sistema, no cómo: objetivo, comportamiento esperado, reglas de negocio, invariantes, pruebas con ID estable (`FEATURE-01`...), casos de error conocidos, fuera de alcance, decisiones pendientes y glosario. No fijes riesgo, TDD, superficies ni diseño de clases: eso es decisión técnica.
-3. Marca la **procedencia** de cada requisito: `HUMAN` (lo pidió la persona) o `AGENT-PROPOSED` (lo propuso un agente; pendiente de adopción). No etiquetes como HUMAN lo que una persona no pidió.
+3. Marca la **procedencia** de cada requisito: `HUMAN` (lo pidió la persona literalmente) o `AGENT-PROPOSED` (lo derivó o propuso un agente; hasta que una persona lo acepte, está pendiente). No etiquetes como HUMAN lo que una persona no pidió literalmente, aunque parezca obvio. Aplica la regla de la persona (ver más abajo).
 4. En cada prueba HUMAN, la primera oración tras el título es el **pasaje literal** que se cita en el inventario. No lo reformules después.
 5. Crea el inventario `docs/quality-contracts/<feature>.inventory.json` solo con los requisitos HUMAN:
 
@@ -80,14 +80,24 @@ Las reglas están codificadas en el test, no inferidas: si cambias tus capas, ca
    PY
    ```
 
-7. Guarda los requisitos AGENT-PROPOSED aparte (en FitNotes, `login.proposed-requirements.json`: `status: PENDING_HUMAN_APPROVAL`, `provenance: AGENT-PROPOSED`, mismo `contract_sha256`). Pasan al inventario cuando una persona los adopte.
+7. Guarda los requisitos AGENT-PROPOSED aparte (en FitNotes, `login.proposed-requirements.json`: `provenance: AGENT-PROPOSED`, mismo `contract_sha256` y un `status` que refleje el estado real: `PENDING_HUMAN_APPROVAL` mientras nadie los acepte; `ACCEPTED_BY_USER_IN_CHAT_NOT_ATTESTED` con `accepted_on` desde que la persona los aceptó en el chat, 2026-10-14, sin evento firmado). Aceptar una propuesta no la convierte en HUMAN ni la mueve al inventario: conserva su procedencia.
 8. Si cambias el contrato: recalcula el hash en todos los JSON, revisa los pasajes y vuelve a pedir aprobación. Una aprobación anterior no cubre bytes nuevos.
 
 Un hash comprueba bytes; no acredita autoría ni que el inventario cubra todo el contrato. Eso lo revisa una persona.
 
+### Regla de la persona sobre las pruebas HUMAN y las propuestas
+
+En FitNotes la persona la fijó en el chat el 2026-10-14. Replícala como política del contrato:
+
+- Las pruebas **HUMAN se respetan siempre**: no se debilitan, no se eliminan y no se reinterpretan, aunque se agreguen otros casos.
+- Los agentes pueden **proponer escenarios adicionales** cuando lo vean necesario, con procedencia **AGENT-PROPOSED**.
+- **Solo es HUMAN lo que la persona pidió literalmente.** Lo que derivan los agentes es AGENT-PROPOSED aunque parezca obvio.
+
+**Lección aprendida (FitNotes).** Al principio se etiquetaron como HUMAN doce requisitos (LOGIN-01 a LOGIN-12), pero solo tres eran lo que la persona pidió ("Valida correo no vacío y con formato válido, y contraseña no vacía"). Los otros nueve (éxito y error reproducibles, usuario identificado, estados de carga, de éxito y de error, sin backend, documentación de escenarios y comprobaciones automatizadas) eran reformulaciones de los agentes. La persona corrigió la procedencia: HUMAN es solo LOGIN-01 a LOGIN-03 y LOGIN-04 a LOGIN-36 son AGENT-PROPOSED, que aceptó en el chat. Para evitarlo, antes de etiquetar un requisito como HUMAN pregunta si la persona lo pidió con esas palabras; si lo dedujo un agente, es AGENT-PROPOSED. Corregir la procedencia cambia los bytes del contrato: hubo que recalcular `contract_sha256` en el inventario y en el archivo de propuestos, y ninguna aprobación anterior cubría los bytes nuevos.
+
 ## 4. Aprobar: solo una persona, con evento externo
 
-Ningún agente puede aprobar el contrato, el inventario ni sus requisitos, y que los archivos estén en Git no es una aprobación. La aprobación es un evento verificable (quién, cuándo, hash aprobado) registrado **fuera del control de los agentes**, por un ejecutor independiente (ver `engineering-assurance/docs/OPERADOR_INDEPENDIENTE.md` del workbench). Mientras tanto, mantén el estado del contrato como "PENDIENTE DE APROBACIÓN HUMANA", como hace `docs/quality-contracts/login.md`. No escribas en el contrato IDs de ejecución, firmas ni aprobaciones supuestas.
+Ningún agente puede aprobar el contrato, el inventario ni sus requisitos, y que los archivos estén en Git no es una aprobación. La aprobación es un evento verificable (quién, cuándo, hash aprobado) registrado **fuera del control de los agentes**, por un ejecutor independiente (ver `engineering-assurance/docs/OPERADOR_INDEPENDIENTE.md` del workbench). Mientras tanto, mantén el estado del contrato como "PENDIENTE DE APROBACIÓN HUMANA" (o, si la persona ya confirmó la procedencia y aceptó las propuestas en el chat, como "sin aprobación formal atestada", que es el estado de `docs/quality-contracts/login.md`). No escribas en el contrato IDs de ejecución, firmas ni aprobaciones supuestas.
 
 ## 5. Adaptar `project-assurance.json`
 
@@ -248,9 +258,9 @@ No se probó ningún push: el remoto está configurado como `origin` en este rep
 
 - [ ] `lib/` con capas `domain`/`data`/`presentation` y `app.dart`; `main.dart` solo hace `runApp`.
 - [ ] `flutter test test/architecture` en verde y comprobado que detecta una infracción real.
-- [ ] Contrato con procedencia por requisito y estado "pendiente de aprobación" hasta que una persona lo apruebe.
-- [ ] Inventario solo con requisitos HUMAN; `contract_sha256` coincide con el contrato; cada pasaje es literal.
-- [ ] Requisitos AGENT-PROPOSED en un archivo aparte, con el mismo hash.
+- [ ] Contrato con procedencia por requisito (HUMAN solo lo que la persona pidió literalmente) y estado "pendiente de aprobación" hasta que una persona lo apruebe de forma atestada. En FitNotes: procedencia confirmada y propuestas aceptadas en el chat, sin aprobación formal atestada.
+- [ ] Inventario solo con requisitos HUMAN (en FitNotes, LOGIN-01 a LOGIN-03); `contract_sha256` coincide con el contrato; cada pasaje es literal.
+- [ ] Requisitos AGENT-PROPOSED en un archivo aparte, con el mismo hash y con el `status` real (en FitNotes, `ACCEPTED_BY_USER_IN_CHAT_NOT_ATTESTED`).
 - [ ] `project-assurance.json`: cada archivo versionado en exactamente una categoría; comandos reales; `capabilities` con `true` solo para lo que el trabajo requiere y el preflight debe acreditar (las cuatro que exige siempre el validador incluidas).
 - [ ] `AGENTS.md` con la entrada obligatoria por el orquestador.
 - [ ] `dart format --output=none --set-exit-if-changed lib test` (comprobación; `dart format lib test` solo aplica formato), `flutter analyze` y `flutter test` en verde, con comando y salida registrados.

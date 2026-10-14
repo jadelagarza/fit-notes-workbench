@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "contract_sha256": "dec0fc66088b251c8cbb914ab8188fd53f69447ce97320d4eb37ef762c1451dd",
+  "contract_sha256": "ef9d4cdada44403de8ad8edead7a983e834b908f37f9b2d38867550acfebe8e3",
   "requirements": [
     {
       "requirement_id": "LOGIN-01",
@@ -13,42 +13,6 @@
     {
       "requirement_id": "LOGIN-03",
       "excerpt": "Un intento de inicio de sesión con la contraseña vacía se rechaza con un error de validación de la contraseña."
-    },
-    {
-      "requirement_id": "LOGIN-04",
-      "excerpt": "Con las credenciales documentadas para el escenario de éxito, el inicio de sesión simulado termina en éxito cada vez que se intenta."
-    },
-    {
-      "requirement_id": "LOGIN-05",
-      "excerpt": "Con las credenciales documentadas para un escenario de error, el inicio de sesión simulado termina en error cada vez que se intenta."
-    },
-    {
-      "requirement_id": "LOGIN-06",
-      "excerpt": "Un inicio de sesión exitoso identifica a un usuario con id, nombre y correo electrónico."
-    },
-    {
-      "requirement_id": "LOGIN-07",
-      "excerpt": "Mientras el inicio de sesión está en curso, la pantalla de inicio de sesión muestra un estado de carga."
-    },
-    {
-      "requirement_id": "LOGIN-08",
-      "excerpt": "Cuando el inicio de sesión termina en éxito, la pantalla de inicio de sesión muestra un estado de éxito."
-    },
-    {
-      "requirement_id": "LOGIN-09",
-      "excerpt": "Cuando el inicio de sesión termina en error, la pantalla de inicio de sesión muestra un estado de error."
-    },
-    {
-      "requirement_id": "LOGIN-10",
-      "excerpt": "El inicio de sesión se resuelve con datos simulados, sin contactar ningún backend."
-    },
-    {
-      "requirement_id": "LOGIN-11",
-      "excerpt": "La documentación del proyecto explica cómo activar cada escenario simulado de éxito y de error."
-    },
-    {
-      "requirement_id": "LOGIN-12",
-      "excerpt": "Existen comprobaciones automatizadas de las validaciones, del flujo de inicio de sesión y de sus estados de carga, éxito y error."
     }
   ]
 }
