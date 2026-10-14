@@ -1,0 +1,97 @@
+# Comprobaciones deterministas de FitNotes ejecutadas por GitHub Actions.
+# Deben coincidir con `checks` de .engineering-assurance/project-assurance.json
+# (salvo `build`, que exige macOS y queda fuera) y con docs/assurance/verification.md.
+# Que este workflow pase NO equivale a ASSURANCE_PASS: ver docs/assurance/verification.md.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# Pull request: un grupo por referencia, y una ejecución nueva cancela la anterior.
+# Push a main: un grupo por commit, de modo que ninguna ejecución se cancela ni
+# se sustituye (GitHub sustituye por defecto la ejecución *pendiente* de un mismo grupo).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # Versión y commit del SDK de Flutter: el único sitio donde se actualizan.
+  # El commit es al que apunta refs/tags/<FLUTTER_VERSION> en github.com/flutter/flutter.
+  FLUTTER_VERSION: 3.47.4
+  FLUTTER_COMMIT: 9584c6713b324636289d067944a46fd6b49df14b
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Restaurar la caché del SDK de Flutter
+        id: flutter-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/flutter
+          key: flutter-sdk-${{ runner.os }}-${{ runner.arch }}-${{ env.FLUTTER_COMMIT }}
+
+      - name: Clonar el SDK de Flutter (solo si la caché no acierta)
+        if: ${{ steps.flutter-cache.outputs.cache-hit != 'true' }}
+        run: git clone --depth 1 --branch "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+
+      - name: Verificar el commit del SDK de Flutter
+        run: |
+          actual="$(git -C "$RUNNER_TEMP/flutter" rev-parse HEAD)"
+          if [ "$actual" != "$FLUTTER_COMMIT" ]; then
+            echo "::error::El SDK de Flutter está en $actual y se esperaba $FLUTTER_COMMIT"
+            exit 1
+          fi
+          echo "SDK de Flutter verificado: $actual"
+
+      - name: Añadir Flutter al PATH
+        run: echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+
+      - name: Desactivar la analítica y mostrar la versión de Flutter
+        run: |
+          flutter --disable-analytics
+          flutter --version
+
+      - name: Restaurar la caché de pub
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ runner.arch }}-${{ env.FLUTTER_COMMIT }}-${{ hashFiles('pubspec.lock') }}
+
+      - name: Instalar dependencias (falla si pubspec.lock cambiaría)
+        id: pub-get
+        run: flutter pub get --enforce-lockfile
+
+      # Cada comprobación se ejecuta aunque falle una anterior, siempre que la
+      # instalación haya ido bien, para que cada resultado quede visible.
+      - name: Comprobar el formato (dart format)
+        if: ${{ !cancelled() && steps.pub-get.outcome == 'success' }}
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: Análisis estático (flutter analyze)
+        if: ${{ !cancelled() && steps.pub-get.outcome == 'success' }}
+        run: flutter analyze
+
+      - name: Pruebas (flutter test)
+        if: ${{ !cancelled() && steps.pub-get.outcome == 'success' }}
+        run: flutter test
+
+      - name: Arquitectura (flutter test test/architecture)
+        if: ${{ !cancelled() && steps.pub-get.outcome == 'success' }}
+        run: flutter test test/architecture
+
+      - name: Dependencias (flutter pub deps)
+        if: ${{ !cancelled() && steps.pub-get.outcome == 'success' }}
+        run: flutter pub deps
