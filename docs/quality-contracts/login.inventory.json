@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "contract_sha256": "ef9d4cdada44403de8ad8edead7a983e834b908f37f9b2d38867550acfebe8e3",
+  "requirements": [
+    {
+      "requirement_id": "LOGIN-01",
+      "excerpt": "Un intento de inicio de sesión con el correo vacío se rechaza con un error de validación del correo."
+    },
+    {
+      "requirement_id": "LOGIN-02",
+      "excerpt": "Un intento de inicio de sesión con un correo de formato inválido se rechaza con un error de validación del correo."
+    },
+    {
+      "requirement_id": "LOGIN-03",
+      "excerpt": "Un intento de inicio de sesión con la contraseña vacía se rechaza con un error de validación de la contraseña."
+    }
+  ]
+}

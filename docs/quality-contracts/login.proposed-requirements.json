@@ -1,0 +1,141 @@
+{
+  "status": "ACCEPTED_BY_USER_IN_CHAT_NOT_ATTESTED",
+  "provenance": "AGENT-PROPOSED",
+  "accepted_on": "2026-10-14",
+  "contract_sha256": "ef9d4cdada44403de8ad8edead7a983e834b908f37f9b2d38867550acfebe8e3",
+  "note": "Requisitos AGENT-PROPOSED (LOGIN-04 a LOGIN-36). La persona los aceptó en el chat el 2026-10-14; conservan su procedencia AGENT-PROPOSED y no forman parte del inventario humano (login.inventory.json, LOGIN-01 a LOGIN-03): validate_bundle.py exige que el inventario coincida exactamente con los requisitos HUMAN activos. La aceptación en el chat no es un evento de aprobación atestado.",
+  "requirements": [
+    {
+      "requirement_id": "LOGIN-04",
+      "excerpt": "Con las credenciales documentadas para el escenario de éxito, el inicio de sesión simulado termina en éxito cada vez que se intenta."
+    },
+    {
+      "requirement_id": "LOGIN-05",
+      "excerpt": "Con las credenciales documentadas para un escenario de error, el inicio de sesión simulado termina en error cada vez que se intenta."
+    },
+    {
+      "requirement_id": "LOGIN-06",
+      "excerpt": "Un inicio de sesión exitoso identifica a un usuario con id, nombre y correo electrónico."
+    },
+    {
+      "requirement_id": "LOGIN-07",
+      "excerpt": "Mientras el inicio de sesión está en curso, la pantalla de inicio de sesión muestra un estado de carga."
+    },
+    {
+      "requirement_id": "LOGIN-08",
+      "excerpt": "Cuando el inicio de sesión termina en éxito, la pantalla de inicio de sesión muestra un estado de éxito."
+    },
+    {
+      "requirement_id": "LOGIN-09",
+      "excerpt": "Cuando el inicio de sesión termina en error, la pantalla de inicio de sesión muestra un estado de error."
+    },
+    {
+      "requirement_id": "LOGIN-10",
+      "excerpt": "El inicio de sesión se resuelve con datos simulados, sin contactar ningún backend."
+    },
+    {
+      "requirement_id": "LOGIN-11",
+      "excerpt": "La documentación del proyecto explica cómo activar cada escenario simulado de éxito y de error."
+    },
+    {
+      "requirement_id": "LOGIN-12",
+      "excerpt": "Existen comprobaciones automatizadas de las validaciones, del flujo de inicio de sesión y de sus estados de carga, éxito y error."
+    },
+    {
+      "requirement_id": "LOGIN-13",
+      "excerpt": "Antes de validarlo, el correo se recorta de los espacios en blanco iniciales y finales."
+    },
+    {
+      "requirement_id": "LOGIN-14",
+      "excerpt": "Un correo vacío o formado solo por espacios en blanco muestra el error correo obligatorio."
+    },
+    {
+      "requirement_id": "LOGIN-15",
+      "excerpt": "Un correo tiene formato válido solo si contiene exactamente una arroba, una parte local no vacía, un dominio con al menos un punto, ninguna etiqueta de dominio vacía y ningún espacio en blanco interno."
+    },
+    {
+      "requirement_id": "LOGIN-16",
+      "excerpt": "Un correo aceptado se normaliza a minúsculas antes de usarse para iniciar sesión."
+    },
+    {
+      "requirement_id": "LOGIN-17",
+      "excerpt": "La contraseña no se recorta y solo es vacía cuando tiene cero caracteres, por lo que una contraseña formada solo por espacios no es vacía."
+    },
+    {
+      "requirement_id": "LOGIN-18",
+      "excerpt": "Cualquier contraseña de al menos un carácter supera la validación, porque no hay reglas de complejidad."
+    },
+    {
+      "requirement_id": "LOGIN-19",
+      "excerpt": "Si existe algún error de validación, no se envía ninguna solicitud de inicio de sesión."
+    },
+    {
+      "requirement_id": "LOGIN-20",
+      "excerpt": "Si el correo y la contraseña son inválidos a la vez, la pantalla muestra ambos errores, cada uno asociado a su campo."
+    },
+    {
+      "requirement_id": "LOGIN-21",
+      "excerpt": "Con el correo demo@fitnotes.dev y la contraseña Demo1234, el inicio de sesión termina en éxito con el usuario de id user-demo-001, nombre Demo FitNotes y correo demo@fitnotes.dev."
+    },
+    {
+      "requirement_id": "LOGIN-22",
+      "excerpt": "Con el correo fallo@fitnotes.dev y cualquier contraseña no vacía, el inicio de sesión termina en el error técnico servicio no disponible."
+    },
+    {
+      "requirement_id": "LOGIN-23",
+      "excerpt": "Cualquier otra combinación de correo y contraseña que supere la validación termina en el error credenciales inválidas."
+    },
+    {
+      "requirement_id": "LOGIN-24",
+      "excerpt": "Los escenarios simulados se activan únicamente mediante las credenciales introducidas, y las mismas credenciales producen siempre el mismo resultado."
+    },
+    {
+      "requirement_id": "LOGIN-25",
+      "excerpt": "El retardo de la respuesta simulada es configurable y en la aplicación es de 800 ms."
+    },
+    {
+      "requirement_id": "LOGIN-26",
+      "excerpt": "Durante la carga se muestra un indicador de progreso y el envío está deshabilitado."
+    },
+    {
+      "requirement_id": "LOGIN-27",
+      "excerpt": "Un nuevo intento de envío durante la carga no genera otra solicitud de inicio de sesión."
+    },
+    {
+      "requirement_id": "LOGIN-28",
+      "excerpt": "El estado de éxito muestra un mensaje de bienvenida con el nombre y el correo del usuario."
+    },
+    {
+      "requirement_id": "LOGIN-29",
+      "excerpt": "Desde el estado de éxito, el botón para volver al formulario devuelve la pantalla a su estado inicial sin cerrar ninguna sesión real."
+    },
+    {
+      "requirement_id": "LOGIN-30",
+      "excerpt": "El error de credenciales inválidas y el error técnico muestran mensajes visibles y distintos entre sí."
+    },
+    {
+      "requirement_id": "LOGIN-31",
+      "excerpt": "Tras un error de inicio de sesión, el formulario conserva los valores introducidos, sigue editable y permite reintentar."
+    },
+    {
+      "requirement_id": "LOGIN-32",
+      "excerpt": "Un correo no vacío con formato inválido muestra un error de formato distinto del error correo obligatorio."
+    },
+    {
+      "requirement_id": "LOGIN-33",
+      "excerpt": "Las validaciones se evalúan al intentar enviar el formulario, y el envío está disponible siempre que no haya una solicitud en curso."
+    },
+    {
+      "requirement_id": "LOGIN-34",
+      "excerpt": "Al iniciar un nuevo intento de envío, los mensajes del intento anterior se sustituyen por el resultado del nuevo intento."
+    },
+    {
+      "requirement_id": "LOGIN-35",
+      "excerpt": "El campo de contraseña oculta los caracteres introducidos."
+    },
+    {
+      "requirement_id": "LOGIN-36",
+      "excerpt": "Un fallo inesperado durante el inicio de sesión se muestra como error técnico y la pantalla nunca queda en carga indefinidamente."
+    }
+  ]
+}
